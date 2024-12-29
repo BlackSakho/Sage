@@ -1,0 +1,318 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+
+type SageKey = 'mourchid' | 'macktoom' | 'capitaine';
+
+
+import sagesData from '../../data/sagesData.json';
+
+// getStaticPaths() génère les chemins statiques
+export async function getStaticPaths() {
+  return Object.keys(sagesData).map((key) => ({
+    params: { sage: key },  // Assurez-vous que "sage" correspond bien au nom du paramètre dans le fichier
+  }));
+}
+
+
+
+const sage = Astro.params.sage as SageKey;  // Utilisation de "sage" comme paramètre
+const sageInfo = sagesData[sage];
+const { speeches } = sageInfo; // Récupération des discours
+let showMore = false; // Gestion de l'affichage du discours complet
+
+if (!sageInfo) return Astro.redirect('/404');
+
+---
+
+<Layout title={sageInfo.name}>
+	<main>
+		<article class="sage-profile">
+			<header>
+				<img src={sageInfo.image} alt={sageInfo.name} class="main-image" />
+				<h1>{sageInfo.name}</h1>
+			</header>
+
+			<section class="biography">
+				<h2>Biographie</h2>
+				<p>{sageInfo.biography}</p>
+			  </section>
+
+			<section class="quotes">
+				<h2>Citations Célèbres</h2>
+				<div class="quotes-grid">
+				  {sageInfo.quotes.map((quote) => (
+					<blockquote class="quote-card">
+					  <p class="quote-text">“{quote.quote}”</p>
+					  <footer class="quote-author">— {quote.author}</footer>
+					</blockquote>
+				  ))}
+				</div>
+			  </section>
+
+			<section class="gallery">
+				<h2>Galerie</h2>
+				<div class="image-grid">
+					{sageInfo.gallery.map((img: string | null | undefined) => (
+						<img src={img} alt={`Image de ${sageInfo.name}`} />
+					))}
+				</div>
+			</section>
+
+			<section class="speeches">
+				<h2>Discours</h2>
+				{speeches.map((speech, index) => (
+				  <div class="speech" key={index}>
+					<h3>{speech.title}</h3>
+					<p>{showMore ? speech.content : `${speech.content.substring(0, 300)}...`}</p>
+					<button
+					  class="button-read-more"
+					  onClick={() => showMore = !showMore}
+					>
+					  {showMore ? "Lire moins" : "Lire plus"}
+					</button>
+				  </div>
+				))}
+			  </section>
+		</article>
+	</main>
+</Layout>
+
+
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 1200px;
+		max-width: calc(100% - 2rem);
+		color: white;
+	}
+	.sage-profile {
+		background: #23262d;
+		border-radius: 8px;
+		padding: 2rem;
+		margin-top: 2rem;
+	}
+	header {
+		text-align: center;
+		margin-bottom: 2rem;
+	}
+	.main-image {
+		width: 300px;
+		height: 300px;
+		border-radius: 50%;
+		object-fit: cover;
+		margin-bottom: 1rem;
+	}
+	h1 {
+		font-size: 3rem;
+		color: rgb(var(--accent-light));
+	}
+	h2 {
+		color: rgb(var(--accent-light));
+		border-bottom: 2px solid rgb(var(--accent-light));
+		padding-bottom: 0.5rem;
+		margin: 2rem 0 1rem;
+	}
+	section {
+		margin-bottom: 2rem;
+	}
+	.quotes-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1rem;
+	}
+	blockquote {
+		background: rgba(var(--accent-dark), 0.2);
+		padding: 1rem;
+		border-left: 4px solid rgb(var(--accent-light));
+		margin: 0;
+	}
+	.image-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+	.image-grid img {
+		width: 100%;
+		height: 200px;
+		object-fit: cover;
+		border-radius: 4px;
+	}
+	.speech {
+		background: rgba(var(--accent-dark), 0.2);
+		padding: 1rem;
+		border-radius: 4px;
+		margin-bottom: 1rem;
+	}
+	.speech h3 {
+		color: rgb(var(--accent-light));
+		margin: 0 0 0.5rem 0;
+	}
+	.quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.quote-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 10px;
+  border-left: 4px solid rgb(var(--accent-light));
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.quote-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.quote-text {
+  font-size: 1.25rem;
+  color: rgb(var(--accent-light));
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.quote-author {
+  font-size: 1rem;
+  color: rgb(var(--accent-light));
+  text-align: right;
+  font-weight: bold;
+}
+.biography {
+  background: rgba(255, 255, 255, 0.1);  /* Fond léger et moderne */
+  padding: 2rem;
+  border-radius: 10px;                   /* Bords arrondis */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Ombre douce */
+  margin-bottom: 2rem;                    /* Espacement avec les autres sections */
+}
+
+.biography h2 {
+  font-size: 2rem;
+  color: rgb(var(--accent-light));
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px; /* Espacement des lettres */
+}
+
+.biography p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: rgb(var(--text-light));  /* Couleur plus claire pour le texte */
+  text-align: justify;            /* Justifier le texte pour un alignement soigné */
+  font-family: 'Georgia', serif;  /* Utilisation d'une police plus élégante */
+}
+.gallery {
+  background: rgba(255, 255, 255, 0.1);  /* Fond légèrement transparent */
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Ombre douce pour ajouter de la profondeur */
+  margin-bottom: 2rem;  /* Espacement avec les autres sections */
+}
+
+.gallery h2 {
+  font-size: 2rem;
+  color: rgb(var(--accent-light));
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px; /* Espacement des lettres */
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));  /* Grille responsive */
+  gap: 1.5rem;  /* Espacement entre les images */
+  justify-items: center;  /* Centrer les images dans la grille */
+}
+
+.image-grid img {
+  width: 100%;
+  height: 250px;  /* Hauteur fixe pour les images */
+  object-fit: cover;  /* Garder les proportions des images tout en remplissant l'espace */
+  border-radius: 10px;  /* Bords arrondis pour un effet plus doux */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Ombre plus prononcée pour les images */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;  /* Animation pour les effets de survol */
+}
+
+.image-grid img:hover {
+  transform: scale(1.05);  /* Légère augmentation de la taille au survol */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);  /* Ombre plus marquée au survol */
+}
+.speech {
+  background: rgba(255, 255, 255, 0.1); /* Arrière-plan léger */
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère pour plus de profondeur */
+  transition: all 0.3s ease-in-out; /* Animation douce lors du survol */
+}
+
+.speech:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Ombre plus forte lors du survol */
+  transform: translateY(-5px); /* Décalage léger vers le haut */
+}
+
+.speech h3 {
+  font-size: 1.5rem;
+  color: rgb(var(--accent-light)); /* Couleur claire pour les titres */
+  margin-bottom: 1rem;
+  font-weight: bold;
+  text-transform: uppercase; /* Titres en majuscules */
+  letter-spacing: 1px; /* Espacement des lettres pour une meilleure lisibilité */
+}
+
+.speech p {
+  font-size: 1.2rem;
+  color: #f4f4f4; /* Couleur douce et contrastée */
+  line-height: 1.8;
+  margin-bottom: 1.5rem; /* Espace entre les paragraphes */
+}
+
+.speech p:last-child {
+  margin-bottom: 0; /* Pas d'espace en bas du dernier paragraphe */
+}
+
+.speech blockquote {
+  background: rgba(var(--accent-dark), 0.2);
+  padding: 1rem;
+  border-left: 5px solid rgb(var(--accent-light));
+  margin-top: 1.5rem;
+  font-style: italic;
+  color: rgb(var(--accent-light));
+}
+
+.speech blockquote p {
+  font-size: 1.2rem;
+  font-weight: 300; /* Texte en italique et léger */
+}
+
+.speech .button-read-more {
+  background-color: rgb(var(--accent-light)); /* Couleur de fond du bouton */
+  color: #23262d;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.speech .button-read-more:hover {
+  background-color: rgb(var(--accent-dark)); /* Changement de couleur au survol */
+}
+
+
+
+</style>
+

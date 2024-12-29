@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SageCard from '../components/SageCard.astro';
+
+const sages = [
+  {
+    id: 'mourchid',
+    name: 'Seydi Mouhamadoul Moustapha Sy',
+    image: '/images/RM.JPG',
+    brief: 'Responsable moral du Dahiratoul Moustarchidina Wal Moustarchidaty (DMWM) et président du Parti de l\'Unité et du Rassemblement - PUR.',
+    period: ''
+  },
+  {
+    id: 'macktoom',
+    name: 'Serigne Cheikh Ahmed Tidiane Sy',
+    image: '/images/macktoom-7.jpg',
+    brief: 'Serigne Cheikh Al-Maktoum est le petit-fils de l\'erudit El Hadji Malick Sy. Fils de Serigne Babacar Sy et Sokhna Astou Kane',
+    period: '1925 - 2017'
+  },
+  {
+    id: 'capitaine',
+    name: 'Mame Cheikh Ahmed Tidiane Sy Capitaine',
+    image: '/images/capitaine-10.jpeg',
+    brief: 'C’est le capitaine de tous les Moustarchides.',
+    period: ''
+  }
+];
+---
+
+<Layout title="Les Grands Sages">
+	<main>
+		<h1>Les Grands <span class="text-gradient">Sages</span></h1>
+		<p class="description">
+			Plongez dans la sagesse intemporelle à travers les enseignements de nos érudits.
+		</p>
+		<div class="sage-grid">
+			{sages.map((sage) => (
+				<SageCard
+					name={sage.name}
+					image={sage.image}
+					brief={sage.brief}
+					period={sage.period}
+					href={`/sages/${sage.id}`}
+				/>
+			))}
+		</div>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 1200px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	h1 {
+		font-size: 4rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+	}
+	.text-gradient {
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+	.description {
+		text-align: center;
+		margin-bottom: 2rem;
+		color: rgb(var(--accent-light));
+	}
+	.sage-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
+</style>
