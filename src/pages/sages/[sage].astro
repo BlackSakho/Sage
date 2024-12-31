@@ -43,8 +43,19 @@ if (!sageInfo) return Astro.redirect('/404');
 				<div class="quotes-grid">
 				  {sageInfo.quotes.map((quote) => (
 					<blockquote class="quote-card">
-					  <p class="quote-text">“{quote.quote}”</p>
-					  <footer class="quote-author">— {quote.author}</footer>
+
+		{typeof quote === 'object' && quote !== null ? (
+ 		 <>
+  			  <p class="quote-text">"{quote.quote}"</p>
+  			  <footer class="quote-author">— {quote.author}</footer>
+  		 </>
+			) : (
+ 		 <p class="quote-text">"{quote}"</p>
+		)}
+
+					  
+
+
 					</blockquote>
 				  ))}
 				</div>
@@ -62,12 +73,12 @@ if (!sageInfo) return Astro.redirect('/404');
 			<section class="speeches">
 				<h2>Discours</h2>
 				{speeches.map((speech, index) => (
-				  <div class="speech" key={index}>
+				  <div class="speech" id="{'speech-${index}'}">
 					<h3>{speech.title}</h3>
 					<p>{showMore ? speech.content : `${speech.content.substring(0, 300)}...`}</p>
 					<button
 					  class="button-read-more"
-					  onClick={() => showMore = !showMore}
+					  onclick={() => showMore = !showMore}
 					>
 					  {showMore ? "Lire moins" : "Lire plus"}
 					</button>
