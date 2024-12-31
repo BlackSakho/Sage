@@ -26,11 +26,8 @@ jobs:
 
       - name: Deploy to GitHub Pages
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           GIT_AUTH_TOKEN: ${{ secrets.ACTION_DEPLOY_KEY }}
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git remote set-url origin https://${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git add .
-          git commit -m "Deploy to GitHub Pages"
-          git push origin gh-pages  # Ensure gh-pages branch exists and is set up for GitHub Pages
+            git remote set-url origin https://${GIT_AUTH_TOKEN}@github.com/${{ github.repository }}.git
+            git push origin gh-pages
+        
