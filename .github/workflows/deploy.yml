@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18.14.1'  # Mettre à jour vers une version prise en charge
+          node-version: '18.14.1'
 
       - name: Install dependencies
         run: npm install
@@ -28,6 +28,9 @@ jobs:
         env:
            GIT_AUTH_TOKEN: ${{ secrets.ACTION_DEPLOY_KEY }}
         run: |
+            git config --global user.name 'github-actions[bot]'
+            git config --global user.email 'github-actions[bot]@users.noreply.github.com'
             git remote set-url origin https://${GIT_AUTH_TOKEN}@github.com/${{ github.repository }}.git
+            git fetch origin
+            git branch -f gh-pages
             git push origin gh-pages
-        
